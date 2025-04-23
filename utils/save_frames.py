@@ -13,7 +13,8 @@ sys.path.append(os.path.join(os.getcwd(), "utils", "YOLO-V8-CAM"))
 from yolo_cam.eigen_cam import EigenCAM
 from yolo_cam.utils.image import show_cam_on_image
 
-cred = credentials.Certificate(os.path.join(os.getcwd(), "utils", "blood-donation-ac142-firebase-adminsdk-i8oz1-23eb9eab7e.json"))  # Path to your Firebase service account key
+# cred = credentials.Certificate("utils/blood-donation-ac142-firebase-adminsdk-i8oz1-23eb9eab7e.json")  # Path to your Firebase service account key
+cred = credentials.Certificate("utils/blood-donation-ac142-firebase-adminsdk-i8oz1-44046042e9.json")  # Path to your Firebase service account key
 firebase_admin.initialize_app(cred, {'storageBucket': 'blood-donation-ac142.appspot.com'})  # Your Firebase Storage bucket
 db = firestore.client()
 bucket = storage.bucket()
