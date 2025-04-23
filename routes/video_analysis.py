@@ -16,7 +16,7 @@ def analyze_video():
 
     # Get the user's email (optional)
     user_email = request.form.get("email")
-    if not user_email:
+    if not user_email or request.files["email"] == "":
         return jsonify({"error": "Email is required"}), 400
 
     video = request.files["video"]
