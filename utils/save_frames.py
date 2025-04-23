@@ -9,7 +9,7 @@ from ultralytics import YOLO
 import sys
 import uuid
 
-sys.path.append("utils\YOLO-V8-CAM")  # Replace with the actual path
+sys.path.append(os.path.join(os.getcwd(), "utils", "YOLO-V8-CAM"))
 from yolo_cam.eigen_cam import EigenCAM
 from yolo_cam.utils.image import show_cam_on_image
 
