@@ -11,7 +11,7 @@ UPLOAD_FOLDER = "uploads"
 def analyze_video():
     start_time = time.time()
 
-    if "video" not in request.files:
+    if "video" not in request.files or request.files["video"].filename == "":
         return jsonify({"error": "No video file provided"}), 400
 
     # Get the user's email (optional)
