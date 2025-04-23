@@ -22,13 +22,6 @@ bucket = storage.bucket()
 PROCESSED_FOLDER = r"processed_frames"
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 
-# Load YOLO model
-model = YOLO("models/best_visual.pt") 
-model.cpu()
-target_layers = [model.model.model[-2]]
-
-cam = EigenCAM(model, target_layers, task="cls")
-
 # Function to extract multiple random frames
 def get_random_frames(video_path, num_frames, resize_shape=(832, 832)):
     cap = cv2.VideoCapture(video_path)
@@ -87,7 +80,12 @@ def upload_to_firebase_storage(local_image_path, remote_path):
 
 def generate_cam(video_path,user_email,num_frames):
     frames, rgb_imgs = get_random_frames(video_path,num_frames)
+    # Load YOLO model
+    model = YOLO("models/best_visual.pt") 
+    model.cpu()
+    target_layers = [model.model.model[-2]]
 
+    cam = EigenCAM(model, target_layers, task="cls")
     uploaded_image_urls = []
     for i, (img, rgb_img) in enumerate(zip(frames, rgb_imgs)):
         grayscale_cam = cam(rgb_img)[0, :, :]
