@@ -17,9 +17,9 @@ PROCESSED_FRAMES = "frames"
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model path
-model = load_model("models/lighting_model.pth", device)
 
 def predict_video(video_path,video_name,user_email):
+    model = load_model("models/lighting_model.pth", device)
 
     USER_SPECIFIC_OUTPUT = os.path.join(PROCESSED_FRAMES, f"{user_email}")
     os.makedirs(USER_SPECIFIC_OUTPUT, exist_ok=True)
