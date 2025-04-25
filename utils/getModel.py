@@ -30,3 +30,18 @@ def getVisualizationModel():
         print("Visualization model downloaded successfully.")
     else:
         print("Visualization model already exists locally. Skipping download.")
+
+def getLightingModel():
+    bucket_name = "deepfake-project-bucket"
+    model_key = "models/lighting_model.pth"
+    local_path = "models/lighting_model.pth"
+
+    os.makedirs("models", exist_ok=True)
+
+    if not os.path.isfile(local_path):
+        print("Lighting model not found locally. Downloading from S3...")
+        s3 = boto3.client('s3')
+        s3.download_file(bucket_name, model_key, local_path)
+        print("Lighting model downloaded successfully.")
+    else:
+        print("Lighting model already exists locally. Skipping download.")
