@@ -5,6 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import firebase_admin
 from firebase_admin import credentials, firestore, storage
+
+import cloudinary
+from cloudinary.uploader import upload
+
 from ultralytics import YOLO
 import sys
 import uuid
@@ -14,10 +18,16 @@ from yolo_cam.eigen_cam import EigenCAM
 from yolo_cam.utils.image import show_cam_on_image
 
 # cred = credentials.Certificate("utils/blood-donation-ac142-firebase-adminsdk-i8oz1-23eb9eab7e.json")  # Path to your Firebase service account key
-cred = credentials.Certificate("utils/blood-donation-ac142-firebase-adminsdk-i8oz1-44046042e9.json")  # Path to your Firebase service account key
-firebase_admin.initialize_app(cred, {'storageBucket': 'blood-donation-ac142.appspot.com'})  # Your Firebase Storage bucket
-db = firestore.client()
-bucket = storage.bucket()
+# cred = credentials.Certificate("utils/blood-donation-ac142-firebase-adminsdk-i8oz1-44046042e9.json")  # Path to your Firebase service account key
+# firebase_admin.initialize_app(cred, {'storageBucket': 'blood-donation-ac142.appspot.com'})  # Your Firebase Storage bucket
+# db = firestore.client()
+# bucket = storage.bucket()
+
+cloudinary.config(
+    cloud_name="dsj8tuguz",
+    api_key="825139752969162",
+    api_secret="Xd5Pz51xIHme98e_U8VWvW3yzwU"
+)   
 
 PROCESSED_FOLDER = r"processed_frames"
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
@@ -78,9 +88,35 @@ def upload_to_firebase_storage(local_image_path, remote_path):
         print(f"Error uploading image to Firebase: {e}")
         return None
 
+# def upload_to_cloudinary_storage(local_image_path, remote_path):
+#     try:
+#         upload_result=upload(local_image_path,PROCESSED_FOLDER=remote_path)
+#         return upload_result.secure_url
+#     except Exception as e:
+#         print(f"Error uploading image to Firebase: {e}")
+#         return None
+
+def upload_to_cloudinary_storage(local_image_path, remote_path):
+    try:
+        folder = os.path.dirname(remote_path)
+
+        upload_result = cloudinary.uploader.upload(
+            local_image_path,
+            folder=folder, 
+            use_filename=True,
+            unique_filename=False,
+            overwrite=True
+        )
+
+        return upload_result["secure_url"]
+    except Exception as e:
+        print(f"Error uploading to Cloudinary: {e}")
+        return None
+
+
 def generate_cam(video_path,user_email,num_frames):
     frames, rgb_imgs = get_random_frames(video_path,num_frames)
-    # Load YOLO model
+
     model = YOLO("models/best_visual.pt") 
     model.cpu()
     target_layers = [model.model.model[-2]]
@@ -91,8 +127,7 @@ def generate_cam(video_path,user_email,num_frames):
         grayscale_cam = cam(rgb_img)[0, :, :]
         cam_image = show_cam_on_image(img, grayscale_cam, use_rgb=True)
 
-        # Save the processed frame locally
-        unique_id = uuid.uuid4().hex[:10]  # Generate a random UID
+        unique_id = uuid.uuid4().hex[:10]
         frame_filename = f"frame_{random.randint(1000, 9999)}_{unique_id}.jpg"
         filename = os.path.join(frame_filename)
 
@@ -102,18 +137,13 @@ def generate_cam(video_path,user_email,num_frames):
         output_path = os.path.join(USER_SPECIFIC_OUTPUT, filename)
         plt.imsave(output_path, cam_image)
 
-        # Upload the processed frame to Firebase Storage
         remote_path = f"VideoVerification/{user_email}/processed_frames/{filename}"
-        public_url = upload_to_firebase_storage(output_path, remote_path)
+        public_url = upload_to_cloudinary_storage(output_path, remote_path)
 
         if public_url:
             uploaded_image_urls.append(public_url)
 
         os.remove(output_path)
         
-
-
-    # Remove the temporary files if needed
-    # os.remove(output_path)
 
     return uploaded_image_urls
