@@ -1,6 +1,6 @@
 from flask import Flask
 import os
-# from utils.getModel import getDeepfakeModel,getVisualizationModel,getLightingModel
+from utils.getModel import getDeepfakeModel,getVisualizationModel,getLightingModel
 from routes.video_analysis import video_analysis_blueprint 
 from routes.cam_generator import cam_blueprint
 from routes.lighting_predict import predict_blueprint
@@ -15,9 +15,9 @@ PROCESSED_FOLDER = "processed_frames"
 
 os.makedirs(PROCESSED_FOLDER, exist_ok=True)
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-# getDeepfakeModel()
-# getVisualizationModel()
-# getLightingModel()
+getDeepfakeModel()
+getVisualizationModel()
+getLightingModel()
 
 @app.route('/home')
 def home():
