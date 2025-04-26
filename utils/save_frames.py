@@ -3,8 +3,6 @@ import random
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import firebase_admin
-from firebase_admin import credentials, firestore, storage
 
 import cloudinary
 from cloudinary.uploader import upload
