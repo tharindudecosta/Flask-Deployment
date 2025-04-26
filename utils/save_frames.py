@@ -73,20 +73,20 @@ def get_random_frames(video_path, num_frames, resize_shape=(832, 832)):
 
     return selected_frames, rgb_imgs
 
-def upload_to_firebase_storage(local_image_path, remote_path):
-    try:
-        # Upload the processed image to Firebase Storage
-        blob = bucket.blob(remote_path)
-        blob.upload_from_filename(local_image_path)
+# def upload_to_firebase_storage(local_image_path, remote_path):
+#     try:
+#         # Upload the processed image to Firebase Storage
+#         blob = bucket.blob(remote_path)
+#         blob.upload_from_filename(local_image_path)
         
-        # Make the image publicly accessible
-        blob.make_public()
+#         # Make the image publicly accessible
+#         blob.make_public()
         
-        # Return the public URL of the uploaded image
-        return blob.public_url
-    except Exception as e:
-        print(f"Error uploading image to Firebase: {e}")
-        return None
+#         # Return the public URL of the uploaded image
+#         return blob.public_url
+#     except Exception as e:
+#         print(f"Error uploading image to Firebase: {e}")
+#         return None
 
 # def upload_to_cloudinary_storage(local_image_path, remote_path):
 #     try:
