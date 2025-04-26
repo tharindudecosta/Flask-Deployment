@@ -11,7 +11,8 @@ UPLOAD_FOLDER = "uploads"
 def analyze_video():
     start_time = time.time()
     print("Request init 2")
-
+    print("Files received:", request.files)
+    print("Form received:", request.form)
     if "video" not in request.files or request.files["video"].filename == "":
         print("Video Missing")
         return jsonify({"error": "No video file provided"}), 400
