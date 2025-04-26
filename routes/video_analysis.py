@@ -10,6 +10,7 @@ UPLOAD_FOLDER = "uploads"
 @video_analysis_blueprint.route("/api/analyzeVideo", methods=["POST"])
 def analyze_video():
     start_time = time.time()
+    print("Request init 2")
 
     if "video" not in request.files or request.files["video"].filename == "":
         return jsonify({"error": "No video file provided"}), 400
