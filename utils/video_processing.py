@@ -21,7 +21,7 @@ def process_video(video_file):
     # Load YOLO model
     # model = load_yolo_model()
 
-    try:    
+    try:
         print("Processing start")
         model_path = 'models/best.pt' 
         model = YOLO(model_path)

@@ -22,8 +22,11 @@ def analyze_video():
         print("Email Missing")
         return jsonify({"error": "Email is required"}), 400
 
+    print("Processing start 2")
+
     video = request.files["video"]
     
+    print("Processing start 2")
     # Analyze video using the video processing function
     result, fake_count, total_count,real_count = process_video(video)
     end_time = time.time()
