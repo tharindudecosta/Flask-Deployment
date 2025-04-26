@@ -21,64 +21,70 @@ def process_video(video_file):
     # Load YOLO model
     # model = load_yolo_model()
 
-    model_path = 'models/best.pt' 
-    model = YOLO(model_path)
-    # Save the uploaded video temporarily
-    with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video:
-        video_path = temp_video.name
-        video_file.save(video_path)
+    try:    
+        print("Processing start")
+        model_path = 'models/best.pt' 
+        model = YOLO(model_path)
+        # Save the uploaded video temporarily
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp4') as temp_video:
+            video_path = temp_video.name
+            video_file.save(video_path)
 
-    # Process video frames
-    fake_frames = 0
-    real_frames = 0
-    total_frames = 0
-    cap = cv2.VideoCapture(video_path)
+        print("Processing start "+video_path)
+        # Process video frames
+        fake_frames = 0
+        real_frames = 0
+        total_frames = 0
+        cap = cv2.VideoCapture(video_path)
 
-    while cap.isOpened():
-        ret, frame = cap.read()
-        if not ret:
-            break
+        while cap.isOpened():
+            ret, frame = cap.read()
+            if not ret:
+                break
 
-        # frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # frame_rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
-        # Run YOLOv8 detection on each frame
-        results = model(frame)
-        
-        for result in results:
-            for box in result.boxes:
-                label = int(box.cls)
-                if label == 1:  # Assuming '1' represents 'fake' class in your model
-                    fake_frames += 1
-                    break  # Move to the next frame after detecting a "fake" label
+            # Run YOLOv8 detection on each frame
+            results = model(frame)
+            
+            for result in results:
+                for box in result.boxes:
+                    label = int(box.cls)
+                    if label == 1:  # Assuming '1' represents 'fake' class in your model
+                        fake_frames += 1
+                        break  # Move to the next frame after detecting a "fake" label
 
-        total_frames += 1
-
-
-        # probs = results[0].probs  # Extract probabilities for the first image
-
-        # # Get the predicted class ID with the highest probability
-        # predicted_class_id = probs.top1  # Class ID with the highest probability
-        # confidence = probs.data[predicted_class_id]  # Confidence score for the prediction
-
-        # # Get the class label
-        # label = model.names[predicted_class_id]
-        # print(f"Predicted Class: {label}, Confidence: {confidence:.2f}")
-        
-        # print(model.names)
-
-        # if label == model.names[0]:
-        #     fake_frames += 1
-        # elif label == model.names[1]:
-        #     real_frames += 1
+            total_frames += 1
 
 
-    # total_frames = fake_frames + real_frames
-    cap.release()
-    os.remove(video_path)  # Clean up
+            # probs = results[0].probs  # Extract probabilities for the first image
 
-    # Decide if the video is fake based on the proportion of "fake" frames
-    fake_threshold = 0.5  # Adjust this threshold as needed
-    is_fake = (fake_frames / total_frames) > fake_threshold
-    real_frames = total_frames - fake_frames
+            # # Get the predicted class ID with the highest probability
+            # predicted_class_id = probs.top1  # Class ID with the highest probability
+            # confidence = probs.data[predicted_class_id]  # Confidence score for the prediction
 
-    return "Fake" if is_fake else "Real", fake_frames, total_frames,real_frames
+            # # Get the class label
+            # label = model.names[predicted_class_id]
+            # print(f"Predicted Class: {label}, Confidence: {confidence:.2f}")
+            
+            # print(model.names)
+
+            # if label == model.names[0]:
+            #     fake_frames += 1
+            # elif label == model.names[1]:
+            #     real_frames += 1
+
+
+        # total_frames = fake_frames + real_frames
+        cap.release()
+        os.remove(video_path)  # Clean up
+
+        # Decide if the video is fake based on the proportion of "fake" frames
+        fake_threshold = 0.5  # Adjust this threshold as needed
+        is_fake = (fake_frames / total_frames) > fake_threshold
+        real_frames = total_frames - fake_frames
+
+        return "Fake" if is_fake else "Real", fake_frames, total_frames,real_frames
+    except Exception as e:
+        print(e)
+

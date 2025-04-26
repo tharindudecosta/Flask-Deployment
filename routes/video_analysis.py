@@ -13,11 +13,13 @@ def analyze_video():
     print("Request init 2")
 
     if "video" not in request.files or request.files["video"].filename == "":
+        print("Video Missing")
         return jsonify({"error": "No video file provided"}), 400
 
     # Get the user's email (optional)
     user_email = request.form.get("email")
     if not user_email or request.files["email"] == "":
+        print("Email Missing")
         return jsonify({"error": "Email is required"}), 400
 
     video = request.files["video"]
