@@ -1,8 +1,11 @@
 import boto3
 import os
 
+# bucket_name = "deepfake-project-bucket"
+bucket_name = "project-deepfake-bucket"
+
+
 def getDeepfakeModel():
-    bucket_name = "deepfake-project-bucket"
     model_key = "models/best.pt"
     local_path = "models/best.pt"
 
@@ -17,7 +20,6 @@ def getDeepfakeModel():
         print("Best.pt model already exists locally. Skipping download.")
 
 def getVisualizationModel():
-    bucket_name = "deepfake-project-bucket"
     model_key = "models/best_visual.pt"
     local_path = "models/best_visual.pt"
 
@@ -32,7 +34,6 @@ def getVisualizationModel():
         print("Visualization model already exists locally. Skipping download.")
 
 def getLightingModel():
-    bucket_name = "deepfake-project-bucket"
     model_key = "models/lighting_model.pth"
     local_path = "models/lighting_model.pth"
 
