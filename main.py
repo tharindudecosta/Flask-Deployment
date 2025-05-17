@@ -4,8 +4,11 @@ from utils.getModel import getDeepfakeModel,getVisualizationModel,getLightingMod
 from routes.video_analysis import video_analysis_blueprint 
 from routes.cam_generator import cam_blueprint
 from routes.lighting_predict import predict_blueprint
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 app.register_blueprint(video_analysis_blueprint)
 app.register_blueprint(cam_blueprint)
 app.register_blueprint(predict_blueprint)
