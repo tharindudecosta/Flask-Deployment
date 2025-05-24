@@ -16,7 +16,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Load model path
 
-def predict_video(video_path, video_name, user_email):
+def predict_video(video_path, video_name, user_email,frame_rate):
     model = load_model("models/lighting_model.pth", device)
 
     transform = ToTensor()
@@ -26,7 +26,6 @@ def predict_video(video_path, video_name, user_email):
     cap = cv2.VideoCapture(video_path)
     fps = cap.get(cv2.CAP_PROP_FPS)
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    frame_rate = 30  # You can adjust this
     interval = int(fps / frame_rate)
     frame_id = 0
 
@@ -90,12 +89,18 @@ def predict():
             return jsonify({"error": "Email is required"}), 400
         UPLOAD_FOLDER = "uploads"
 
+        frame_rate = request.form.get("frame_rate")
+        try:
+            frame_rate = int(frame_rate)
+        except (TypeError, ValueError):
+            frame_rate = 15
+            
         os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
         video = request.files["video"]
         video_path = os.path.join(UPLOAD_FOLDER, video.filename)
         video.save(video_path)
-        result, fake_count, real_count,total_count = predict_video(video_path,video.filename,user_email)
+        result, fake_count, real_count,total_count = predict_video(video_path,video.filename,user_email,frame_rate)
         os.remove(video_path)
         end_time = time.time()
         total_time = end_time - start_time
