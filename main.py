@@ -8,7 +8,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})  # or restrict origin in prod
+
 app.register_blueprint(video_analysis_blueprint)
 app.register_blueprint(cam_blueprint)
 app.register_blueprint(predict_blueprint)
